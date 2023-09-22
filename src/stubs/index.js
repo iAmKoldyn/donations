@@ -7,10 +7,14 @@ function loadStub(fileName) {
     return JSON.parse(data);
 }
 
-const authorResponse = loadStub('authors/success.json');
-const subscriberResponse = loadStub('subscriber/success.json');
+const authorSuccessResponse = loadStub('authors/success.json');
+const authorFailureResponse = loadStub('authors/failure.json');
+const subscriberSuccessResponse = loadStub('subscriber/success.json');
+const subscriberFailureResponse = loadStub('subscriber/failure.json');
 
 module.exports = {
-    authorResponse,
-    subscriberResponse
+    authorSuccessResponse,
+    authorFailureResponse,
+    subscriberSuccessResponse,
+    subscriberFailureResponse
 };
