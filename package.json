@@ -1,0 +1,25 @@
+{
+  "name": "fastify_frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "commonjs",
+  "dependencies": {
+    "fastify": "^4.23.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/azy.3301/donations.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/azy.3301/donations/issues"
+  },
+  "homepage": "https://gitlab.com/azy.3301/donations#readme"
+}
