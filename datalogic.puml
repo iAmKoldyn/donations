@@ -1,0 +1,62 @@
+@startuml
+object "Author" as a {
+    {field} id
+    {field} name
+    {field} hashPassword
+    {field} subscriptionLevels
+}
+
+object "User" as u {
+    {field} id
+    {field} name
+    {field} hashPassword
+}
+
+object "Donation" as d {
+    {field} id
+    {field} sum
+    {field} comment
+    {field} userId
+    {field} authorId
+    {field} date
+}
+
+object "Subscription" as s {
+    {field} id
+    {field} userId
+    {field} isPaid
+    {field} expirationDate
+    {field} authorId
+    {field} level
+    {field} autoRefresh
+}
+
+object "Comment" as c {
+    {field} id
+    {field} postId
+    {field} userId
+    {field} content
+    {field} date
+}
+
+object "Post" as p {
+    {field} id
+    {field} userId
+    {field} authorId
+    {field} content
+    {field} attachment
+    {field} visibilityLevel
+    {field} viewsCount
+    {field} date
+}
+
+a *--> d
+a *--> p
+a *--> s
+p *--> c
+u *--> c
+u *--> s
+u *--> d
+
+
+@enduml
