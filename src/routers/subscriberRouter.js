@@ -1,5 +1,5 @@
 async function routes(fastify, options) {
-    fastify.get('/subscriber/:id', async (request, reply) => {
+    fastify.get('/subscribers/:id', async (request, reply) => {
         //* TODO - retrieve subscriber by id, return 200 or 404
 
         const { id } = request.params;
@@ -29,7 +29,7 @@ async function routes(fastify, options) {
             .send("subscriber with id: *id* created!")
     });
 
-    fastify.delete('/subscriber/:id', async (request, reply) => {
+    fastify.delete('/subscribers/:id', async (request, reply) => {
         //* TODO - find and delete subscriber by id, return 200 or 404
 
         const { id } = request.params;
@@ -40,7 +40,7 @@ async function routes(fastify, options) {
             .send("subscriber with id: *id* deleted!")
     });
 
-    fastify.put('/subscriber/:id', async (request, reply) => {
+    fastify.put('/subscribers/:id', async (request, reply) => {
         //* TODO - find and update subscriber by id, return 200, 404 or 422 if params are incorrect
 
         const { id } = request.params;

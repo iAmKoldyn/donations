@@ -1,5 +1,5 @@
 async function routes(fastify, options) {
-    fastify.get('/subscription/:id', async (request, reply) => {
+    fastify.get('/subscriptions/:id', async (request, reply) => {
         //* TODO - retrieve subscription by id, return 200 or 404
 
         const { id } = request.params;
@@ -21,7 +21,7 @@ async function routes(fastify, options) {
             .send("*subscriptions collection*");
     });
 
-    fastify.post('/subscription', async (request, reply) => {
+    fastify.post('/subscriptions', async (request, reply) => {
         //* TODO - check request parameters, create subscription, return 200, 422
         //* TODO - 409 if there is subscription with same level, userId and authorId and it's actual
 

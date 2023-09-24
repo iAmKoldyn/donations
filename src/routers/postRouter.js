@@ -1,5 +1,5 @@
 async function routes(fastify, options) {
-    fastify.get('/post/:id', async (request, reply) => {
+    fastify.get('/posts/:id', async (request, reply) => {
         //* TODO - retrieve post by id, return 200 or 404
 
         const { id } = request.params;
