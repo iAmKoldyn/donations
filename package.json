@@ -5,6 +5,7 @@
   "main": "server.js",
   "type": "commonjs",
   "dependencies": {
+    "@fastify/autoload": "^5.7.1",
     "fastify": "^4.23.2"
   },
   "devDependencies": {

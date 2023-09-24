@@ -1,9 +1,12 @@
 const fastify = require('fastify')({ logger: true });
-const authorRouter = require('./routers/authorRouter');
-const subscriberRouter = require('./routers/subscriberRouter');
+const autoload = require('@fastify/autoload')
+const path = require('path');
 
-fastify.register(authorRouter);
-fastify.register(subscriberRouter);
+fastify.register(autoload, {
+    dir: path.join(__dirname, 'routers'),
+    dirNameRoutePrefix: false
+})
+
 
 const start = async () => {
     try {
