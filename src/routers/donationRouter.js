@@ -1,32 +1,41 @@
+const Donation = require('../models/Donation');
+
 async function routes(fastify, options) {
     fastify.get('/donations/:id', async (request, reply) => {
-        //* TODO - retrieve donation by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized donation with id: ${id}*"`);
+        try {
+            const donation = await Donation.findById(id).exec();
+            if (!donation) return reply.code(404).send('Donation not found');
+            return reply.code(200).send(donation);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.get('/donations', async (request, reply) => {
-        //* TODO - retrieve donations collection by authorId, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - if param authorId is not present, return 422
+        const { authorId } = request.query;
+        if (!authorId) return reply.code(422).send('authorId is required');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*donations collection*");
+        try {
+            const donations = await Donation.find({ authorId }).exec();
+            return reply.code(200).send(donations);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
-    fastify.post('/donations', async (request, reply) => {
-        //* TODO - check request parameters, check user is subscriber, create donation, return 200, 422
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("donation with id: *id* created!")
+    fastify.post('/donations', async (request, reply) => {
+        const { sum, comment, userId, authorId, date } = request.body;
+        if (!sum || !userId || !authorId) return reply.code(422).send('Sum, UserId, and AuthorId are required');
+
+        try {
+            const donation = new Donation({ sum, comment, userId, authorId, date });
+            await donation.save();
+            return reply.code(200).send(donation);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 }
 

@@ -1,34 +1,49 @@
+const Subscription = require('../models/Subscription');
+
 async function routes(fastify, options) {
     fastify.get('/subscriptions/:id', async (request, reply) => {
-        //* TODO - retrieve subscription by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized subscription with id: ${id}*`);
+        try {
+            const subscription = await Subscription.findById(id).exec();
+            if (!subscription) return reply.code(404).send('Subscription not found');
+            return reply.code(200).send(subscription);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.get('/subscriptions', async (request, reply) => {
-        //* TODO - retrieve subscriptions collection, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - if authorId param is present, get subscribers collection by authorId
-        //* TODO - if subscriberId param is present, get subscribers collection by subscriberId
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*subscriptions collection*");
+        const { authorId, subscriberId } = request.query;
+        try {
+            let subscriptions;
+            if (authorId) {
+                subscriptions = await Subscription.find({ authorId }).exec();
+            } else if (subscriberId) {
+                subscriptions = await Subscription.find({ userId: subscriberId }).exec();
+            } else {
+                subscriptions = await Subscription.find().exec();
+            }
+            return reply.code(200).send(subscriptions);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
-    fastify.post('/subscriptions', async (request, reply) => {
-        //* TODO - check request parameters, create subscription, return 200, 422
-        //* TODO - 409 if there is subscription with same level, userId and authorId and it's actual
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("subscription with id: *id* created!")
+    fastify.post('/subscriptions', async (request, reply) => {
+        const { userId, isPaid, expirationDate, authorId, level, autoRefresh } = request.body;
+        if (!userId || !authorId || !level) return reply.code(422).send('UserId, AuthorId, and Level are required');
+
+        try {
+            const existingSubscription = await Subscription.findOne({ userId, authorId, level, expirationDate: { $gte: new Date() } }).exec();
+            if (existingSubscription) return reply.code(409).send('Active subscription already exists');
+
+            const subscription = new Subscription({ userId, isPaid, expirationDate, authorId, level, autoRefresh });
+            await subscription.save();
+            return reply.code(200).send(subscription);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 }
 
