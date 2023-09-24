@@ -1,0 +1,37 @@
+{
+  "success": true,
+
+  "data": [{
+    "id": 1,
+    "name": "name",
+    "subscriptionLevels": [
+      {
+        "name": "name1",
+        "level": 1,
+        "sum": 20
+      },
+      {
+        "name": "name2",
+        "level": 2,
+        "sum": 20
+      }
+    ]
+  },
+    {
+      "id": 2,
+      "name": "name_2",
+      "subscriptionLevels": [
+        {
+          "name": "name1",
+          "level": 1,
+          "sum": 20
+        },
+        {
+          "name": "name2",
+          "level": 2,
+          "sum": 20
+        }
+      ]
+    }
+  ]
+}
