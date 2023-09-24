@@ -1,12 +1,14 @@
 async function routes(fastify, options) {
-    fastify.get('/post:id', async (request, reply) => {
+    fastify.get('/post/:id', async (request, reply) => {
         //* TODO - retrieve post by id, return 200 or 404
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*serialized post*");
-    });
+            .send(`*serialized post with id: ${id}*`);
+    })
 
     fastify.get('/posts', async (request, reply) => {
         //* TODO - retrieve posts collection by authorId or by subscriberId, don't wrap in try-catch or wrap with not 500 code in catch
@@ -28,6 +30,17 @@ async function routes(fastify, options) {
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
             .send("post with id: *id* created!")
+    });
+
+    fastify.delete('/posts/:id', async (request, reply) => {
+        //* TODO - find and delete pst by id if current user is author return 200 or 404
+
+        const { id } = request.params;
+
+        return reply
+            .code(200)
+            .header('Content-Type', 'application/json; charset=utf-8')
+            .send(`post with id: ${id} deleted!`)
     });
 }
 

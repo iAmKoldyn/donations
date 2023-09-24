@@ -1,11 +1,13 @@
 async function routes(fastify, options) {
-    fastify.get('/donation:id', async (request, reply) => {
+    fastify.get('/donations/:id', async (request, reply) => {
         //* TODO - retrieve donation by id, return 200 or 404
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*serialized donation*");
+            .send(`*serialized donation with id: ${id}*"`);
     });
 
     fastify.get('/donations', async (request, reply) => {

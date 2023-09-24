@@ -1,11 +1,13 @@
 async function routes(fastify, options) {
-    fastify.get('/comment:id', async (request, reply) => {
+    fastify.get('/comments/:id', async (request, reply) => {
         //* TODO - retrieve comment by id, return 200 or 404
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*serialized comment*");
+            .send(`*serialized comment with id: ${id}*`);
     });
 
     fastify.get('/comments', async (request, reply) => {
@@ -25,6 +27,17 @@ async function routes(fastify, options) {
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
             .send("comment with id: *id* created!")
+    });
+
+    fastify.delete('/comments/:id', async (request, reply) => {
+        //* TODO - find and delete comment by id if current user is post author or comment author return 200 or 404
+
+        const { id } = request.params;
+
+        return reply
+            .code(200)
+            .header('Content-Type', 'application/json; charset=utf-8')
+            .send(`comment with id: ${id} deleted!`)
     });
 }
 

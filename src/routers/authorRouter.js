@@ -1,11 +1,13 @@
 async function routes(fastify, options) {
-    fastify.get('/author:id', async (request, reply) => {
+    fastify.get('/authors/:id', async (request, reply) => {
         //* TODO - retrieve author by id, return 200 or 404
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*serialized author*");
+            .send(`*serialized author with id: ${id}*`);
     });
 
     fastify.get('/authors', async (request, reply) => {
@@ -27,22 +29,26 @@ async function routes(fastify, options) {
             .send("author with id: *id* created!")
     });
 
-    fastify.delete('/author:id', async (request, reply) => {
+    fastify.delete('/authors/:id', async (request, reply) => {
         //* TODO - find and delete author by id, return 200 or 404
 
+        const { id } = request.params;
+
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("author with id: *id* deleted!")
+            .send(`author with id: ${id} deleted!`)
     });
 
-    fastify.put('/authors:id', async (request, reply) => {
+    fastify.put('/authors/:id', async (request, reply) => {
         //* TODO - find and update author by id, return 200, 404 or 422 if params are incorrect
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send({message: "author with id: *id* updated!",
+            .send({message: `author with id: ${id} updated!`,
                     "author": "*serialized author*"})
     });
 }

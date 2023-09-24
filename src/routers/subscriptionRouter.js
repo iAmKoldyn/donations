@@ -1,11 +1,13 @@
 async function routes(fastify, options) {
-    fastify.get('/subscription:id', async (request, reply) => {
+    fastify.get('/subscription/:id', async (request, reply) => {
         //* TODO - retrieve subscription by id, return 200 or 404
+
+        const { id } = request.params;
 
         return reply
             .code(200)
             .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*serialized subscription*");
+            .send(`*serialized subscription with id: ${id}*`);
     });
 
     fastify.get('/subscriptions', async (request, reply) => {
