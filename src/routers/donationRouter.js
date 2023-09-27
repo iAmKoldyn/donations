@@ -36,7 +36,6 @@ async function routes(fastify, options) {
         } catch (error) {
             return reply.code(500).send(error);
         }
->>>>>>> feature-models
     });
 }
 
