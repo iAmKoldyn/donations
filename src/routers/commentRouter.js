@@ -1,43 +1,57 @@
+const Comment = require('../models/Comment');
+
 async function routes(fastify, options) {
     fastify.get('/comments/:id', async (request, reply) => {
-        //* TODO - retrieve comment by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized comment with id: ${id}*`);
+        try {
+            const comment = await Comment.findById(id).exec();
+            if (!comment) return reply.code(404).send('Comment not found');
+            return reply.code(200).send(comment);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.get('/comments', async (request, reply) => {
-        //* TODO - retrieve comments collection by postId or subscriberId, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - if params postId and subscriberId are not present, return 422
+        const { postId, subscriberId } = request.query;
+        if (!postId && !subscriberId) return reply.code(422).send('postId or subscriberId is required');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*comments collection*");
+        try {
+            let comments;
+            if (postId) {
+                comments = await Comment.find({ postId }).exec();
+            } else {
+                comments = await Comment.find({ subscriberId }).exec();
+            }
+            return reply.code(200).send(comments);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
-    fastify.post('/comments', async (request, reply) => {
-        //* TODO - check request parameters, current user is subscriber, create comment, return 200, 422
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("comment with id: *id* created!")
+    fastify.post('/comments', async (request, reply) => {
+        const { postId, userId, content, date } = request.body;
+        if (!postId || !userId || !content) return reply.code(422).send('PostId, UserId, and Content are required');
+
+        try {
+            const comment = new Comment({ postId, userId, content, date });
+            await comment.save();
+            return reply.code(200).send(comment);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.delete('/comments/:id', async (request, reply) => {
-        //* TODO - find and delete comment by id if current user is post author or comment author return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`comment with id: ${id} deleted!`)
+        try {
+            const comment = await Comment.findByIdAndDelete(id).exec();
+            if (!comment) return reply.code(404).send('Comment not found');
+            return reply.code(200).send(`Comment with id: ${id} deleted!`);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 }
 

@@ -1,9 +1,26 @@
 const fastify = require('fastify')({ logger: true });
-const authorRouter = require('./routers/authorRouter');
-const subscriberRouter = require('./routers/subscriberRouter');
+const autoload = require('@fastify/autoload');
+const path = require('path');
 
-fastify.register(authorRouter);
-fastify.register(subscriberRouter);
+let user = process.env.DB_USER;
+let password = process.env.DB_PASSWORD;
+let host = process.env.DB_HOST;
+let port = process.env.DB_PORT;
+let db = process.env.DATABASE;
+
+fastify.register(require('@fastify/mongodb'), {
+    forceClose: true,
+    url: `mongodb://${user}:${password}@${host !== "" ? host : "localhost"}:${port}/${db}`
+});
+
+fastify.register(autoload, {
+    dir: path.join(__dirname, 'routers'),
+    dirNameRoutePrefix: false,
+});
+
+// ... rest of the file
+
+
 
 const start = async () => {
     try {

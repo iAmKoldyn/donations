@@ -1,55 +1,67 @@
+const Author = require('../models/Author');
+
 async function routes(fastify, options) {
     fastify.get('/authors/:id', async (request, reply) => {
-        //* TODO - retrieve author by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized author with id: ${id}*`);
+        try {
+            const author = await Author.findById(id).exec();
+            if (!author) return reply.code(404).send('Author not found');
+            return reply.code(200).send(author);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.get('/authors', async (request, reply) => {
-        //* TODO - retrieve authors collection, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - if param tags is present, return authors collection by tags
-
-            return reply
-                .code(200)
-                .header('Content-Type', 'application/json; charset=utf-8')
-                .send("*authors collection*");
+        try {
+            const { tags } = request.query;
+            let authors;
+            if (tags) {
+                authors = await Author.find({ tags: { $in: tags.split(',') } }).exec();
+            } else {
+                authors = await Author.find().exec();
+            }
+            return reply.code(200).send(authors);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.post('/authors', async (request, reply) => {
-        //* TODO - check request parameters, create author, return 200, 422 or 409
+        const { name, hashPassword, subscriptionLevels } = request.body;
+        if (!name || !hashPassword) return reply.code(422).send('Name and password are required');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("author with id: *id* created!")
+        try {
+            const author = new Author({ name, hashPassword, subscriptionLevels });
+            await author.save();
+            return reply.code(200).send(author);
+        } catch (error) {
+            if (error.code === 11000) return reply.code(409).send('Author already exists');
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.delete('/authors/:id', async (request, reply) => {
-        //* TODO - find and delete author by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`author with id: ${id} deleted!`)
+        try {
+            const author = await Author.findByIdAndDelete(id).exec();
+            if (!author) return reply.code(404).send('Author not found');
+            return reply.code(200).send(`Author with id: ${id} deleted!`);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.put('/authors/:id', async (request, reply) => {
-        //* TODO - find and update author by id, return 200, 404 or 422 if params are incorrect
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({message: `author with id: ${id} updated!`,
-                    "author": "*serialized author*"})
+        try {
+            const author = await Author.findByIdAndUpdate(id, request.body, { new: true }).exec();
+            if (!author) return reply.code(404).send('Author not found');
+            return reply.code(200).send(author);
+        } catch (error) {
+            if (error.name === 'ValidationError') return reply.code(422).send(error);
+            return reply.code(500).send(error);
+        }
     });
 }
 
