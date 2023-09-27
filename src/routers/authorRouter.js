@@ -32,11 +32,15 @@ async function routes(fastify, options) {
         if (!name || !hashPassword) return reply.code(422).send('Name and password are required');
 
         try {
-            const author = new Author({ name, hashPassword, subscriptionLevels });
-            await author.save();
-            return reply.code(200).send(author);
+            const db = fastify.mongo.client.db('mongodb');
+            const collection = db.collection('authors');
+
+            const existingAuthor = await collection.findOne({ name });
+            if (existingAuthor) return reply.code(409).send('Author already exists');
+
+            const result = await collection.insertOne({ name, hashPassword, subscriptionLevels });
+            return reply.code(200).send(result.ops[0]);
         } catch (error) {
-            if (error.code === 11000) return reply.code(409).send('Author already exists');
             return reply.code(500).send(error);
         }
     });
