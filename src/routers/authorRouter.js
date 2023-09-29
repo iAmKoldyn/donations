@@ -1,56 +1,109 @@
+const Author = require('../models/Author');
+
 async function routes(fastify, options) {
     fastify.get('/authors/:id', async (request, reply) => {
-        //* TODO - retrieve author by id, return 200 or 404
-
         const { id } = request.params;
+        try {
+            const db = fastify.mongo.client.db('mongodb');
+            const collection = db.collection('authors');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized author with id: ${id}*`);
+            const author = await collection.findOne({ _id: new fastify.mongo.ObjectId(id) });
+            if (!author) return reply.code(404).send('Author not found');
+
+            return reply.code(200).send(author);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.get('/authors', async (request, reply) => {
-        //* TODO - retrieve authors collection, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - if param tags is present, return authors collection by tags
+        try {
+            const { tags } = request.query;
+            const db = fastify.mongo.client.db('mongodb');
+            const collection = db.collection('authors');
 
-            return reply
-                .code(200)
-                .header('Content-Type', 'application/json; charset=utf-8')
-                .send("*authors collection*");
+            let authors;
+            if (tags) {
+                authors = await collection.find({ tags: { $in: tags.split(',') } }).toArray();
+            } else {
+                authors = await collection.find().toArray();
+            }
+
+            return reply.code(200).send(authors);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
-    fastify.post('/authors', async (request, reply) => {
-        //* TODO - check request parameters, create author, return 200, 422 or 409
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("author with id: *id* created!")
+    fastify.post('/authors', async (request, reply) => {
+        const { name, hashPassword, subscriptionLevels } = request.body;
+        if (!name || !hashPassword) return reply.code(422).send('Name and password are required');
+
+        try {
+            const db = fastify.mongo.client.db('mongodb'); //required for each model!!!!!!!!!!!!!!
+            const collection = db.collection('authors');
+
+            const existingAuthor = await collection.findOne({ name });
+            if (existingAuthor) return reply.code(409).send('Author already exists');
+
+            const result = await collection.insertOne({ name, hashPassword, subscriptionLevels });
+
+            // Log res debug
+            console.log('Insert Result:', JSON.stringify(result, null, 2));
+
+            if (!result.ops || result.ops.length === 0) {
+
+                const insertedAuthor = await collection.findOne({ name });
+                if (insertedAuthor) return reply.code(200).send(insertedAuthor);
+                return reply.code(500).send('Insertion successful, but no document returned.');
+            }
+
+            return reply.code(200).send(result.ops[0]);
+        } catch (error) {
+            console.error('Error during insert:', error);
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.delete('/authors/:id', async (request, reply) => {
-        //* TODO - find and delete author by id, return 200 or 404
-
         const { id } = request.params;
+        try {
+            const db = fastify.mongo.client.db('mongodb');
+            const collection = db.collection('authors');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`author with id: ${id} deleted!`)
+            const result = await collection.deleteOne({ _id: new fastify.mongo.ObjectId(id) });
+            if (result.deletedCount === 0) return reply.code(404).send('Author not found');
+
+            return reply.code(200).send(`Author with id: ${id} deleted!`);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.put('/authors/:id', async (request, reply) => {
-        //* TODO - find and update author by id, return 200, 404 or 422 if params are incorrect
-
         const { id } = request.params;
+        try {
+            const db = fastify.mongo.client.db('mongodb');
+            const collection = db.collection('authors');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({message: `author with id: ${id} updated!`,
-                    "author": "*serialized author*"})
+            const updateResult = await collection.updateOne(
+                { _id: new fastify.mongo.ObjectId(id) },
+                { $set: request.body }
+            );
+
+            if (updateResult.matchedCount === 0) return reply.code(404).send('Author not found');
+
+            const updatedAuthor = await collection.findOne({ _id: new fastify.mongo.ObjectId(id) });
+            if (!updatedAuthor) return reply.code(404).send('Updated author not found');
+
+            return reply.code(200).send(updatedAuthor);
+        } catch (error) {
+            if (error.name === 'ValidationError') return reply.code(422).send(error);
+            return reply.code(500).send(error);
+        }
     });
+
 }
 
 module.exports = routes;
