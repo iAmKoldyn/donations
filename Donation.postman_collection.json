@@ -1,0 +1,656 @@
+{
+	"info": {
+		"_postman_id": "1963e8ec-45a5-4bd2-b837-d54628df07e5",
+		"name": "Donation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27736851"
+	},
+	"item": [
+		{
+			"name": "Author",
+			"item": [
+				{
+					"name": "GET Author by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/authors/<AUTHOR_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors",
+								"<AUTHOR_ID>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Authors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/authors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Authors + query parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/authors?tags=tag1,tag2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors"
+							],
+							"query": [
+								{
+									"key": "tags",
+									"value": "tag1,tag2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST (Create) Author",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"hashPassword\": \"password123\",\n    \"subscriptionLevels\": [\"basic\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "POST http://localhost:3001/authors",
+							"protocol": "POST http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Author",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "DELETE http://localhost:3001/authors/<AUTHOR_ID>",
+							"protocol": "DELETE http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors",
+								"<AUTHOR_ID>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT (Update) Author",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Doe\",\n    \"hashPassword\": \"newpassword123\",\n    \"subscriptionLevels\": [\"premium\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/authors/<AUTHOR_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"authors",
+								"<AUTHOR_ID>"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "GET Method to Retrieve a Comment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/comments/<COMMENT_ID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"comments",
+								"<COMMENT_ID"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Comments by postId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/comments?postId=<POST_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "postId",
+									"value": "<POST_ID>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Comments by subscriberId",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Comments by postId or subscriberId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/comments?postId=<POST_ID>&subscriberId=<SUBSCRIBER_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "postId",
+									"value": "<POST_ID>"
+								},
+								{
+									"key": "subscriberId",
+									"value": "<SUBSCRIBER_ID>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Method to Create a Comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"postId\": \"<POST_ID>\", \n    \"userId\": \"<USER_ID>\", \n    \"content\": \"This is a comment.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Method to Delete a Comment by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/comments/<COMMENT_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"comments",
+								"<COMMENT_ID>"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Donation",
+			"item": [
+				{
+					"name": "GET Method to Retrieve a Donation by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/donations/<DONATION_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"donations",
+								"<DONATION_ID>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Donations by authorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/donations?authorId=<AUTHOR_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"donations"
+							],
+							"query": [
+								{
+									"key": "authorId",
+									"value": "<AUTHOR_ID>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sum\": 100, \n    \"comment\": \"Keep up the good work!\", \n    \"userId\": \"<USER_ID>\", \n    \"authorId\": \"<AUTHOR_ID>\", \n    \"date\": \"<DATE>\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/donations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"donations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "GET Method to Retrieve a Post by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/posts/<POST_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"posts",
+								"<POST_ID>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Posts by authorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/posts?authorId=<AUTHOR_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "authorId",
+									"value": "<AUTHOR_ID>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Posts by subscriberId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/posts?subscriberId=<SUBSCRIBER_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "subscriberId",
+									"value": "<SUBSCRIBER_ID>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Method to Create a Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"<USER_ID>\", \n    \"authorId\": \"<AUTHOR_ID>\", \n    \"content\": \"This is a post content\", \n    \"visibilityLevel\": \"public\", \n    \"viewsCount\": 0, \n    \"date\": \"<DATE>\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Method to Delete a Post by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "DELETE http://localhost:3001/posts/<POST_ID>",
+							"protocol": "DELETE http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"posts",
+								"<POST_ID>"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriber",
+			"item": [
+				{
+					"name": "GET Method to Retrieve a Subscriber by ID",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Subscribers by authorId",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "POST Method to Create a Subscriber",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\", \n    \"hashPassword\": \"password123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/subscribers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"subscribers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Method to Update a Subscriber by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Doe\", \n    \"hashPassword\": \"newpassword123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/subscribers/<SUBSCRIBER_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"subscribers",
+								"<SUBSCRIBER_ID>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Method to Delete a Subscriber by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/subscribers/<SUBSCRIBER_ID>",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"subscribers",
+								"<SUBSCRIBER_ID>"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "GET Method to Retrieve a Subscription by ID",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Subscriptions by authorId",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GET Method to Retrieve Subscriptions by subscriberId",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "POST Method to Create a Subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"<USER_ID>\", \n    \"isPaid\": true, \n    \"expirationDate\": \"2023-12-31T23:59:59.999Z\", \n    \"authorId\": \"<AUTHOR_ID>\", \n    \"level\": \"premium\", \n    \"autoRefresh\": false\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/subscriptions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
