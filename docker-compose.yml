@@ -12,8 +12,8 @@ services:
       - DB_HOST=${MONGO_HOST}
       - DB_PORT=${MONGO_PORT}
       - DB_USER=${MONGO_USER}
-      - DATABASE=${MONGO_DATABASE}
       - DB_PASSWORD=${MONGO_PASSWORD}
+      - DATABASE=${MONGO_DATABASE}
     depends_on:
       - mongo
 
@@ -25,10 +25,10 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
     ports:
       - '${MONGO_PORT}:27017'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
 
 volumes:
   mongodb_data:

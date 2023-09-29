@@ -1,0 +1,17 @@
+1. GET by ID
+curl -X GET http://localhost:3001/authors/<AUTHOR_ID> -H "Content-Type: application/json"
+
+2. GET All Authors
+curl -X GET http://localhost:3001/authors -H "Content-Type: application/json"
+
+2. GET All Authors + query parameter
+curl -X GET "http://localhost:3001/authors?tags=tag1,tag2" -H "Content-Type: application/json"
+
+3. POST (Create) Author
+curl -X POST http://localhost:3001/authors -H "Content-Type: application/json" -d '{"name": "John Doe", "hashPassword": "password123", "subscriptionLevels": ["basic"]}'
+
+4. DELETE Author
+curl -X DELETE http://localhost:3001/authors/<AUTHOR_ID> -H "Content-Type: application/json"
+
+5. PUT (Update) Author
+curl -X PUT http://localhost:3001/authors/<AUTHOR_ID> -H "Content-Type: application/json" -d '{"name": "Jane Doe", "hashPassword": "newpassword123", "subscriptionLevels": ["premium"]}'
