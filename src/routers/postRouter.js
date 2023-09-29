@@ -1,46 +1,62 @@
+const Post = require('../models/Post');
+const Subscription = require('../models/Subscription');
+
 async function routes(fastify, options) {
     fastify.get('/posts/:id', async (request, reply) => {
-        //* TODO - retrieve post by id, return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`*serialized post with id: ${id}*`);
-    })
+        try {
+            const post = await Post.findById(id).exec();
+            if (!post) return reply.code(404).send('Post not found');
+            return reply.code(200).send(post);
+        } catch (error) {
+            return reply.code(500).send(error);
+            return reply.code(500).send(error);
+        }
+    });
 
     fastify.get('/posts', async (request, reply) => {
-        //* TODO - retrieve posts collection by authorId or by subscriberId, don't wrap in try-catch or wrap with not 500 code in catch
-        //* TODO - retrieve posts by level order by date descending if subscriberId is present (from collection service)
-        //* TODO - retrieve posts by author if authorId is present and == current user order by date descending
-        //* TODO - retrieve posts by author and level if authorId is present and != current user order by date descending
-        //* TODO - if params authorId and subscriberId are not present, return 422
+        const { authorId, subscriberId } = request.query;
+        if (!authorId && !subscriberId) return reply.code(422).send('authorId or subscriberId is required');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("*posts collection*");
+        try {
+            let posts;
+            if (authorId) {
+                posts = await Post.find({ authorId }).sort({ date: -1 }).exec();
+            } else if (subscriberId) {
+                const subscriptions = await Subscription.find({ userId: subscriberId }).exec();
+                const authorIds = subscriptions.map(sub => sub.authorId);
+                posts = await Post.find({ authorId: { $in: authorIds }, level: { $in: subscriptions.map(sub => sub.level) } }).sort({ date: -1 }).exec();
+            } else {
+                posts = await Post.find().sort({ date: -1 }).exec();
+            }
+            return reply.code(200).send(posts);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.post('/posts', async (request, reply) => {
-        //* TODO - check request parameters, current user is author, create post, return 200, 422
+        const { userId, authorId, content, attachment, visibilityLevel, viewsCount, date } = request.body;
+        if (!userId || !authorId || !content || !visibilityLevel) return reply.code(422).send('UserId, AuthorId, Content, and VisibilityLevel are required');
 
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send("post with id: *id* created!")
+        try {
+            const post = new Post({ userId, authorId, content, attachment, visibilityLevel, viewsCount, date });
+            await post.save();
+            return reply.code(200).send(post);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 
     fastify.delete('/posts/:id', async (request, reply) => {
-        //* TODO - find and delete pst by id if current user is author return 200 or 404
-
         const { id } = request.params;
-
-        return reply
-            .code(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send(`post with id: ${id} deleted!`)
+        try {
+            const post = await Post.findByIdAndDelete(id).exec();
+            if (!post) return reply.code(404).send('Post not found');
+            return reply.code(200).send(`Post with id: ${id} deleted!`);
+        } catch (error) {
+            return reply.code(500).send(error);
+        }
     });
 }
 

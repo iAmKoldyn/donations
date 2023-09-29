@@ -1,12 +1,25 @@
 const fastify = require('fastify')({ logger: true });
-const autoload = require('@fastify/autoload')
+const autoload = require('@fastify/autoload');
 const path = require('path');
+
+const {
+    DB_USER: user,
+    DB_PASSWORD: password,
+    DB_HOST: host = 'localhost',
+    DB_PORT: port,
+    DATABASE: db
+} = process.env;
+
+fastify.register(require('@fastify/mongodb'), {
+    forceClose: true,
+    url: `mongodb://${user}:${password}@${host}:${port}/${db}?authSource=admin`
+});
+
 
 fastify.register(autoload, {
     dir: path.join(__dirname, 'routers'),
-    dirNameRoutePrefix: false
-})
-
+    dirNameRoutePrefix: false,
+});
 
 const start = async () => {
     try {
