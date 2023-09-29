@@ -1,4 +1,4 @@
-const Donation = require('../models/Donation');
+const Donation = require('../models/donation');
 
 async function routes(fastify, options) {
     fastify.get('/donations/:id', async (request, reply) => {

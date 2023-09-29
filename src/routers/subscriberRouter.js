@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const Subscription = require('../models/Subscription');
+const User = require('../models/user');
+const Subscription = require('../models/subscription');
 
 async function routes(fastify, options) {
     fastify.get('/subscribers/:id', async (request, reply) => {

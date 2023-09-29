@@ -10,19 +10,21 @@ const {
     DATABASE: db
 } = process.env;
 
-fastify.register(require('@fastify/mongodb'), {
-    forceClose: true,
-    url: `mongodb://${user}:${password}@${host}:${port}/${db}?authSource=admin`
-});
-
+const mongoose = require('mongoose');
 
 fastify.register(autoload, {
     dir: path.join(__dirname, 'routers'),
     dirNameRoutePrefix: false,
 });
 
+fastify.post('/test', async (request, reply) => {
+    const { a } = request.query;
+    return request.body;
+});
+
 const start = async () => {
     try {
+        await mongoose.connect(`mongodb://${user}:${password}@${host}:${port}/${db}?authSource=admin`);
         await fastify.listen(3001, '0.0.0.0');
         fastify.log.info(`server listening on ${fastify.server.address().port}`);
     } catch (err) {

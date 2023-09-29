@@ -2,6 +2,7 @@
 object "Author" as a {
     {field} id
     {field} name
+    {field} tags
     {field} hashPassword
     {field} subscriptionLevels
 }
@@ -24,7 +25,7 @@ object "Donation" as d {
 object "Subscription" as s {
     {field} id
     {field} userId
-    {field} isPaid
+    {field} actual
     {field} expirationDate
     {field} authorId
     {field} level
@@ -57,6 +58,4 @@ p *--> c
 u *--> c
 u *--> s
 u *--> d
-
-
 @enduml

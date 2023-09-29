@@ -1,5 +1,5 @@
-const Post = require('../models/Post');
-const Subscription = require('../models/Subscription');
+const Post = require('../models/post');
+const Subscription = require('../models/subscription');
 
 async function routes(fastify, options) {
     fastify.get('/posts/:id', async (request, reply) => {

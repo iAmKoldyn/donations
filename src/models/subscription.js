@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const SubscriptionSchema = new Schema({
+    _externalId: Schema.Types.BigInt,
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
     isPaid: Boolean,
     expirationDate: Date,

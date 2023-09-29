@@ -1,4 +1,4 @@
-const Subscription = require('../models/Subscription');
+const Subscription = require('../models/subscription');
 
 async function routes(fastify, options) {
     fastify.get('/subscriptions/:id', async (request, reply) => {
