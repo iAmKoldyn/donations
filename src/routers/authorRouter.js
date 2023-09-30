@@ -88,17 +88,18 @@ async function routes(fastify, options) {
     });
 
     fastify.put('/authors/:id', async (request, reply) => {
-        if (Author.requiredParams() !== request.body.keys) {
-            const diff = Author.requiredParams().filter((element) => !request.body[element]);
-            return reply.code(422).send({error: `required fields: ${diff.join(", ")}`});
-        }
-
-        const {id} = request.body;
-
+        const { id } = request.params;
         try {
+            const bodyKeys = Object.keys(request.body);
+            if (!Author.requiredParams().every(param => bodyKeys.includes(param))) {
+                const diff = Author.requiredParams().filter((element) => !bodyKeys.includes(element));
+                return reply.code(422).send({error: `required fields: ${diff.join(", ")}`});
+            }
+
             const updatedAuthor = await Author.findOneAndUpdate(
                 {_externalId: id},
-                {$set: request.body}
+                {$set: request.body},
+                {new: true}
             );
 
             if (!updatedAuthor) return reply.code(404).send({error: `author with id: ${id} not found`});

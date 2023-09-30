@@ -1,10 +1,11 @@
 const Subscription = require('../models/subscription');
+const mongoose = require('mongoose');
 
 async function routes(fastify, options) {
     fastify.get('/subscriptions/:id', async (request, reply) => {
         const { id } = request.params;
         try {
-            const subscription = await Subscription.findById(id).exec();
+            const subscription = await Subscription.findOne({ _externalId: id }).exec();
             if (!subscription) return reply.code(404).send('Subscription not found');
             return reply.code(200).send(subscription);
         } catch (error) {
@@ -29,7 +30,6 @@ async function routes(fastify, options) {
         }
     });
 
-
     fastify.post('/subscriptions', async (request, reply) => {
         const { userId, isPaid, expirationDate, authorId, level, autoRefresh } = request.body;
         if (!userId || !authorId || !level) return reply.code(422).send('UserId, AuthorId, and Level are required');
@@ -38,7 +38,15 @@ async function routes(fastify, options) {
             const existingSubscription = await Subscription.findOne({ userId, authorId, level, expirationDate: { $gte: new Date() } }).exec();
             if (existingSubscription) return reply.code(409).send('Active subscription already exists');
 
-            const subscription = new Subscription({ userId, isPaid, expirationDate, authorId, level, autoRefresh });
+            const subscription = new Subscription({
+                _externalId: new mongoose.Types.ObjectId(),
+                userId,
+                isPaid,
+                expirationDate,
+                authorId,
+                level,
+                autoRefresh
+            });
             await subscription.save();
             return reply.code(200).send(subscription);
         } catch (error) {
