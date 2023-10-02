@@ -1,5 +1,6 @@
 const Post = require('../models/post');
 const Subscription = require('../models/subscription');
+const mongoose = require('mongoose');
 
 async function routes(fastify, options) {
     fastify.get('/posts/:id', async (request, reply) => {
@@ -9,7 +10,6 @@ async function routes(fastify, options) {
             if (!post) return reply.code(404).send('Post not found');
             return reply.code(200).send(post);
         } catch (error) {
-            return reply.code(500).send(error);
             return reply.code(500).send(error);
         }
     });
@@ -25,7 +25,7 @@ async function routes(fastify, options) {
             } else if (subscriberId) {
                 const subscriptions = await Subscription.find({ userId: subscriberId }).exec();
                 const authorIds = subscriptions.map(sub => sub.authorId);
-                posts = await Post.find({ authorId: { $in: authorIds }, level: { $in: subscriptions.map(sub => sub.level) } }).sort({ date: -1 }).exec();
+                posts = await Post.find({ authorId: { $in: authorIds } }).sort({ date: -1 }).exec();
             } else {
                 posts = await Post.find().sort({ date: -1 }).exec();
             }

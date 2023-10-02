@@ -7,14 +7,14 @@ async function getCommentsByPostId(postId, query = null) {
     const serializedComments = [];
 
     if (query) {
-        comments = query.find({postId: postId}).select('-postId');
+        comments = await query.find({postId: postId}).select('-postId').exec();
     } else {
-        comments = Comment.find({postId: postId}).select('-postId');
+        comments = await Comment.find({postId: postId}).select('-postId').exec();
     }
 
-    for await (const doc of comments) {
+    for (const doc of comments) {
         let comm = doc.serialized();
-        addSerializedUser(comm);
+        await addSerializedUser(comm);
         serializedComments.push(comm);
     }
 
@@ -26,37 +26,31 @@ async function getCommentsByUserId(userId, query = null) {
     const serializedComments = [];
 
     if (query) {
-        comments = query.find({postId: userId}).select('-userId');
+        comments = await query.find({userId: userId}).select('-userId').exec();
     } else {
-        comments = Comment.find({postId: userId}).select('-userId');
+        comments = await Comment.find({userId: userId}).select('-userId').exec();
     }
 
-    comments.forEach((comment) => {
-        addSerializedPost(comment);
-        serializedComments.push(comment)
-    });
+    for (const comment of comments) {
+        await addSerializedPost(comment);
+        serializedComments.push(comment);
+    }
 
     return serializedComments;
 }
 
-function addSerializedPost(comment) {
+async function addSerializedPost(comment) {
     const {postId} = comment;
-
-    const post = Post.find({_id: postId});
-
+    const post = await Post.findById(postId).exec();
     delete comment["postId"];
-
-    comment["post"] = post.serialized();
+    comment["post"] = post ? post.serialized() : null;
 }
 
-function addSerializedUser(comment) {
-    const {postId} = comment;
-
-    const user = User.find({_id: postId});
-
-    delete comment["userID"];
-
-    comment["author"] = user.serialized();
+async function addSerializedUser(comment) {
+    const {userId} = comment;
+    const user = await User.findById(userId).exec();
+    delete comment["userId"];
+    comment["author"] = user ? user.serialized() : null;
 }
 
 module.exports = {getCommentsByUserId, getCommentsByPostId};

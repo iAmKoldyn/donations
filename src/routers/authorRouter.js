@@ -2,6 +2,7 @@ const Author = require('../models/author');
 const {Schema} = require("mongoose");
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
+
 const salt = bcrypt.genSaltSync(5);
 
 async function routes(fastify, options) {
