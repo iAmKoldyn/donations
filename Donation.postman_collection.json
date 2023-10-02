@@ -481,7 +481,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "DELETE http://localhost:3001/posts/<POST_ID>",
+							"raw": "http://localhost:3001/posts/<POST_ID>",
 							"protocol": "DELETE http",
 							"host": [
 								"localhost"
